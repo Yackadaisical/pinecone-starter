@@ -22,16 +22,15 @@ export async function POST(req: Request) {
     // Get the context from the last message
     const context = await getContext(lastMessage.content, '')
 
-
     const prompt = [
       {
         role: 'system',
         content: `You are an AI assistant who is truthful, helpful, clever, and articulate. You are eager to provide vivid and thoughtful responses to the user.
-      START CONTEXT BLOCK
-      ${context}
-      END OF CONTEXT BLOCK
-      AI assistant will not invent anything that is not drawn directly from the CONTEXT BLOCK, you can only use facts and truthful information learned during training.
-      `,
+        START CONTEXT BLOCK
+        ${context}
+        END OF CONTEXT BLOCK
+        AI assistant will not invent anything that is not drawn directly from the CONTEXT BLOCK, you can only use facts and truthful information learned during training.
+        `,
       },
     ]
 

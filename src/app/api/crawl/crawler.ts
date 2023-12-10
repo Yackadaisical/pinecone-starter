@@ -1,5 +1,6 @@
 import cheerio from 'cheerio';
 import { NodeHtmlMarkdown } from 'node-html-markdown';
+import pdfParse from 'pdf-parse';
 
 interface Page {
   url: string;
@@ -12,6 +13,7 @@ class Crawler {
   private queue: { url: string; depth: number }[] = [];
 
   constructor(private maxDepth = 2, private maxPages = 1) { }
+  // In this specific configuration, the maxDepth setting effectively doesn't matter because maxPages is set to 1, which means the crawler will only ever process the initial URL and no additional pages. If you wanted the crawler to follow links and process more pages, you would need to increase maxPages to a number greater than 1.
 
   async crawl(startUrl: string): Promise<Page[]> {
     // Add the start URL to the queue
@@ -65,7 +67,14 @@ class Crawler {
   private async fetchPage(url: string): Promise<string> {
     try {
       const response = await fetch(url);
-      return await response.text();
+      if (url.endsWith('.pdf')) {
+        // Handle PDF files
+        const data = await response.arrayBuffer();
+        const pdfData = await pdfParse(data);
+        return pdfData.text; // Extracted text content from PDF
+      } else {
+        return await response.text();
+      }
     } catch (error) {
       console.error(`Failed to fetch ${url}: ${error}`);
       return '';
