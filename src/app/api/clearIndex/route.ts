@@ -7,12 +7,13 @@ export async function POST() {
   // Select the desired index
   const index = pinecone.Index(process.env.PINECONE_INDEX!)
 
-  // Use the custom namespace, if provided, otherwise use the default
-  const namespaceName = process.env.PINECONE_NAMESPACE ?? ''
+  // Use the custom namespace, if provided, otherwise use the default (I think this is only available for paid version)
+  const namespaceName = process.env.PINECONE_NAMESPACE ?? ""
   const namespace = index.namespace(namespaceName)
 
   // Delete everything within the namespace
-  await namespace.deleteAll();
+  // await namespace.deleteAll(); for paid
+  await index.deleteAll();
 
   return NextResponse.json({
     success: true

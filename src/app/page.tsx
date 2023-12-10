@@ -10,9 +10,37 @@ import InstructionModal from "./components/InstructionModal";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 
 const Page: React.FC = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  // note you cannot have hooks after an early return statement; so all hooks need to bet called at top of component, before any conditional rendering or early return  
   const [gotMessages, setGotMessages] = useState(false);
   const [context, setContext] = useState<string[] | null>(null);
   const [isModalOpen, setModalOpen] = useState(false);
+
+  // Authentication check 
+  useEffect(() => {
+    const checkAuth = async () => {
+      let auth = sessionStorage.getItem("auth");
+
+      if (auth === "true") {
+        setIsAuthenticated(true);
+        return;
+      }
+
+      let pass = prompt("Enter password");
+      if (pass === null) { // User clicked cancel
+        setIsAuthenticated(false);
+        return;
+      } else if (pass === process.env.NEXT_PUBLIC_PASSWORD) {
+        sessionStorage.setItem("auth", "true");
+        setIsAuthenticated(true);
+      } else {
+        alert("Wrong password");
+        setIsAuthenticated(false);
+      }
+    };
+
+    checkAuth();
+  }, []);
 
   const { messages, input, handleInputChange, handleSubmit } = useChat({
     onFinish: async () => {
@@ -46,6 +74,17 @@ const Page: React.FC = () => {
 
     prevMessagesLengthRef.current = messages.length;
   }, [messages, gotMessages]);
+
+  // Early return, if Auth state is pending, show a loading state
+  // you need to ensure that all hooks are called unconditionally at the top of your component. This means that you cannot have return statements that depend on conditions evaluated before all hooks are called.
+  if (isAuthenticated === null) {
+    return <div>Loading...</div>; // Loading state
+  }
+
+  // Early return, if Auth is denied, show denial message
+  if (!isAuthenticated) {
+    return <div>Access denied</div>; // If authentication failed
+  }
 
   return (
     <div className="flex flex-col justify-between h-screen bg-gray-800 p-2 mx-auto max-w-full">
