@@ -39,6 +39,7 @@ export const Context: React.FC<ContextProps> = ({ className, selected }) => {
         onClick={() =>
           crawlDocument(
             entry.url,
+            entry.company,
             setEntries,
             setCards,
             splittingMethod,

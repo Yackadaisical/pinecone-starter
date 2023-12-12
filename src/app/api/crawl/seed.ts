@@ -14,7 +14,7 @@ interface SeedOptions {
 
 type DocumentSplitter = RecursiveCharacterTextSplitter | MarkdownTextSplitter
 
-async function seed(url: string, limit: number, indexName: string, options: SeedOptions) {
+async function seed(url: string,  limit: number, indexName: string, options: SeedOptions) {
   try {
     // Initialize the Pinecone client
     const pinecone = new Pinecone();
@@ -23,7 +23,7 @@ async function seed(url: string, limit: number, indexName: string, options: Seed
     const { splittingMethod, chunkSize, chunkOverlap } = options;
 
     // Create a new Crawler with depth 1 and maximum pages as limit
-    const crawler = new Crawler(1, limit || 100);
+    const crawler = new Crawler(1, limit || 10);
 
     // Crawl the given URL and get the pages
     const pages = await crawler.crawl(url) as Page[];
@@ -76,8 +76,9 @@ async function embedDocument(doc: Document): Promise<PineconeRecord> {
       values: embedding, // The vector values are the OpenAI embeddings
       metadata: { // The metadata includes details about the document
         chunk: doc.pageContent, // The chunk of text that the vector represents
-        text: doc.metadata.text as string, // The text of the document
+        // text: doc.metadata.text as string, // The text of the document
         url: doc.metadata.url as string, // The URL where the document was found
+        company: doc.metadata.company as string, // Company name
         hash: doc.metadata.hash as string // The hash of the document content
       }
     } as PineconeRecord;
@@ -98,7 +99,8 @@ async function prepareDocument(page: Page, splitter: DocumentSplitter): Promise<
       metadata: {
         url: page.url,
         // Truncate the text to a maximum byte length
-        text: truncateStringByBytes(pageContent, 36000)
+        first_par: truncateStringByBytes(pageContent, 2000),
+        company: page.company,
       },
     }),
   ]);
