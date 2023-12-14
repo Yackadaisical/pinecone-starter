@@ -38,6 +38,7 @@
     "@playwright/test": "^1.38.0",
     "@types/md5": "^2.3.2",
     "@types/node": "^20",
+    "@types/pdf-parse": "^1.1.4",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
