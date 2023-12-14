@@ -9,6 +9,7 @@ import Link from "next/link";
 export interface IUrlEntry {
   url: string;
   title: string;
+  company: string;
   seeded: boolean;
   loading: boolean;
 }
