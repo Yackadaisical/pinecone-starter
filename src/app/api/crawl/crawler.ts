@@ -70,10 +70,16 @@ class Crawler {
       const response = await fetch(url);
       if (url.endsWith('.pdf')) {
         // Handle PDF files
-        const data = await response.arrayBuffer();
-        const pdfData = await pdfParse(data);
-        return pdfData.text; // Extracted text content from PDF
+        const buffer = await response.arrayBuffer();
+        // Send the PDF buffer to the serverless function for parsing
+        const parseResponse = await fetch('/api/crawl/parse-pdf', {
+          method: 'POST',
+          body: buffer,
+        });
+        const parsedData = await parseResponse.json();
+        return parsedData.text; // Extracted text content from PDF
       } else {
+        // Handle non-PDF content
         return await response.text();
       }
     } catch (error) {
