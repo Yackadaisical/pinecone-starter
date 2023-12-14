@@ -5,7 +5,6 @@ import pdfParse from 'pdf-parse';
 interface Page {
   url: string;
   content: string;
-  company: string;
 }
 
 class Crawler {
