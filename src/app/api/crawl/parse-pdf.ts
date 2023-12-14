@@ -1,7 +1,11 @@
-// pages/api/crawl/parse-pdf.js
+// src/app/api/crawl/parse-pdf.ts
+import { NextApiRequest, NextApiResponse } from 'next';
 import pdfParse from 'pdf-parse';
 
-export default async function handler(req, res) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   try {
     // Expecting a POST request with the PDF file as a buffer in the body
     if (req.method === 'POST') {
