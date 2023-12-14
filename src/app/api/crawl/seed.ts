@@ -14,7 +14,7 @@ interface SeedOptions {
 
 type DocumentSplitter = RecursiveCharacterTextSplitter | MarkdownTextSplitter
 
-async function seed(url: string,  limit: number, indexName: string, options: SeedOptions) {
+async function seed(url: string, company:string, limit: number, indexName: string, options: SeedOptions) {
   try {
     // Initialize the Pinecone client
     const pinecone = new Pinecone();
@@ -26,7 +26,7 @@ async function seed(url: string,  limit: number, indexName: string, options: See
     const crawler = new Crawler(1, limit || 10);
 
     // Crawl the given URL and get the pages
-    const pages = await crawler.crawl(url) as Page[];
+    const pages = await crawler.crawl(url, company) as Page[];
 
     // Choose the appropriate document splitter based on the splitting method
     const splitter: DocumentSplitter = splittingMethod === 'recursive' ?
